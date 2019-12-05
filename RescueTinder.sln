@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RescueTinder", "RescueTinder\RescueTinder.csproj", "{CD45E3F9-6A13-474F-9541-1725E9C14ACF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD45E3F9-6A13-474F-9541-1725E9C14ACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD45E3F9-6A13-474F-9541-1725E9C14ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD45E3F9-6A13-474F-9541-1725E9C14ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD45E3F9-6A13-474F-9541-1725E9C14ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {154B7C8A-830E-4ADF-8B94-6B17F9BE45B7}
+	EndGlobalSection
+EndGlobal
