@@ -23,5 +23,7 @@ namespace RescueTinder.Data
         public User Receiver { get; set; }
 
         public DateTime CreatedOn { get; set; }
+
+        public string Content { get; set; }
     }
 }

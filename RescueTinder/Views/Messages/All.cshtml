@@ -1,0 +1,34 @@
+﻿@model List<MailViewModel>
+@{
+    ViewData["Title"] = "All";
+}
+
+<h1>Your mail box</h1>
+
+<table class="table">
+    <tr>
+        <td>Dog</td>
+        <td>User</td>
+    </tr>
+    @foreach (var like in Model)
+    {
+        <tr>
+            <td>
+                <a class="row" asp-controller="Dogs" asp-action="Dog" asp-route-id="@like.DogId">
+                    <img src="@like.DogImageUrl" alt="Alternate Text" width="50" />
+                    <div style="padding-left:10px">@like.DogName</div>
+                </a>
+            </td>
+            <td>
+                <a class="row" asp-controller="Users" asp-action="User" asp-route-id="@like.UserId">
+                    <img src="@like.UserImageUrl" alt="Alternate Text" width="50" />
+                    <div style="padding-left:10px">@like.UserName</div>
+                </a>
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-controller="Messages" asp-action="About" asp-route-id="@like.Id">View</a>
+            </td>
+        </tr>
+    }
+</table>
+

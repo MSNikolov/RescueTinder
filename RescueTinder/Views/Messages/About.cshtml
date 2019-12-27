@@ -1,0 +1,39 @@
+﻿@using RescueTinder.Data;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<User> userManager
+@model MessageListViewModel;
+@{
+    ViewData["Title"] = "About";
+}
+
+
+@foreach (var message in Model.OldMessages)
+{
+    if (message.SenderId == userManager.GetUserId(User))
+    {
+    <div class="chatbox darker">
+        <img class="right" src="@message.SenderImageUrl" alt="Avatar">
+        <p>@message.Content</p>
+        <span class="time-left">@message.CreatedOn</span>
+    </div>
+    }
+
+    else
+    {
+        <div class="chatbox">
+            <img src="@message.SenderImageUrl" alt="Avatar" />
+            <p>@message.Content</p>
+            <span class="time-right">@message.CreatedOn</span>
+        </div>
+    }
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="@Model.Content">Write a message:</label>
+        <textarea asp-for="@Model.Content" class="form-control"></textarea>
+        <span asp-validation-for="@Model.Content" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
+

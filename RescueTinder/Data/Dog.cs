@@ -16,7 +16,7 @@ namespace RescueTinder.Data
         [MinLength(3), MaxLength(50)]
         public string Name { get; set; }
 
-        public DateTime? BirthDate { get; set; }                
+        public DateTime BirthDate { get; set; }                
 
         [Required]
         public Province Province { get; set; }

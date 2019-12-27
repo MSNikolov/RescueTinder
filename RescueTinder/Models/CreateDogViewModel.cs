@@ -16,8 +16,9 @@ namespace RescueTinder.Models
         [Display(Name = "Dog name")]
         public string Name { get; set; }
 
+        [Required]
         [Display(Name= "Date of birth")]
-        public DateTime? BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
 
         [Required]
         [Display (Name = "Where is the dog currently situated?")]

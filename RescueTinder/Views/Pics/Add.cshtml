@@ -1,0 +1,16 @@
+﻿@model AddPicModel
+@{
+    ViewData["Title"] = "Add";
+}
+
+<h1>Add a picture of your dog</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for=@Model.Pic></label>
+        <input type="file" accept="image/*" asp-for=@Model.Pic class="form-control" />
+        <span asp-validation-for=@Model.Pic class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+

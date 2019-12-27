@@ -1,0 +1,24 @@
+﻿@model UserViewModel
+@{
+    ViewData["Title"] = "User";
+}
+
+<h1>@Model.Name</h1>
+
+<div class="row">
+    <div class="col-7">
+        <img src="@Model.ImageUrl" alt="Alternate Text" style="max-width: 600px" />
+    </div>
+    <div class="col-5">
+        <ul>
+            <li>@Model.Name is from @Model.Province.ToString()</li>
+            <li>@Math.Floor(DateTime.Today.Subtract(Model.BirthDate).Days/365.0) years old</li>
+            <li>
+                @Model.Name says: 
+                <div class="blockquote">
+                    @Model.PersonalNotes
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

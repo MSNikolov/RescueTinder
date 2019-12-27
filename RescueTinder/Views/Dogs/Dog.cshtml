@@ -1,0 +1,153 @@
+﻿@model DogViewModel
+@using Microsoft.AspNetCore.Identity
+@using RescueTinder.Data
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Http
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Threading.Tasks;
+@using CloudinaryDotNet;
+@using CloudinaryDotNet.Actions;
+@using RescueTinder.Models;
+@using Microsoft.EntityFrameworkCore;
+@inject SignInManager<User> signInManager
+@inject UserManager<User> userManager
+
+@{
+    ViewData["Title"] = "Dog";
+}
+
+<h1>@Model.Name</h1>
+
+<h2 style="padding-top:50px">Gallery</h2>
+
+<div class="row" style="padding-top: 25px">
+
+    @foreach (var pic in Model.Images)
+    {
+        <a asp-controller="Pics" asp-action="Show" asp-route-id=@pic.Key style="padding-top:10px">
+            <div class="col-1">
+                <img src="@pic.Value" alt="Alternate Text" width="100" />
+            </div>
+        </a>
+    }
+</div>
+
+<div style="padding-top:50px">
+    <ul>
+        <li>The owner of @Model.Name is @Model.Owner</li>
+        <li>@Model.Name is born on @Model.BirthDate.ToString("dd-MMM-yyyy")
+        <li>@Model.Name is a @Model.Breed.ToString()</li>
+        <li>@Model.Name is situated in @Model.Province.ToString()</li>
+
+        @if (@Model.IsVaccinated)
+        {
+            <li>
+                @Model.Name is vaccinated
+            </li>
+        }
+
+        else
+        {
+            <li>
+                @Model.Name is not vaccinated
+            </li>
+        }
+
+        @if (@Model.IsDisinfected)
+        {
+            <li>
+                @Model.Name is disinfected
+            </li>
+        }
+
+        else
+        {
+            <li>
+                @Model.Name is not disinfected
+            </li>
+        }
+
+        <li>
+            @Model.Owner says about @Model.Name:
+            <div>
+                <blockquote>@Model.OwnerNotes</blockquote>
+            </div>
+        </li>
+
+        <li>
+            The vet of @Model.Name is Dr. @Model.Vet
+        </li>
+
+        @if (Model.Vet != "No vet")
+        {
+            <li>
+                Dr. @Model.Vet added the following notes:
+
+                @foreach (var note in Model.VetNotes)
+                {
+                    <div style="padding-top:15px; padding-bottom:15px">
+                        <h2>
+                            @note.Key.ToString("dd-MMM-yyyy"):
+                        </h2>
+                        <div>
+                            <text style="background-color: darkcyan; border: 1px solid black" class="text-light">@note.Value</text>
+                        </div>
+                    </div>
+                }
+
+            </li>
+        }
+
+    </ul>
+</div>
+
+
+@if (Model.OwnerId != userManager.GetUserId(User))
+{
+    @if (!Model.Likes.Any(l => l.UserId == userManager.GetUserId(User)))
+    {
+        <div class="row" style="padding-top:50px; padding-left:25px">
+            <a class="btn btn-primary" asp-action="Like" asp-controller="Dogs" asp-route-id=@Model.Id>Like!</a>
+        </div>
+    }
+
+    else
+    {
+        <div class="row" style="padding-top:50px">
+            <h2 class="text-info">You liked @Model.Name</h2>
+        </div>
+    }
+}
+
+else
+{
+    <div style="padding-top:25px">
+        <a class="btn btn-primary" asp-controller="Pics" asp-action="Add" asp-route-id="@Model.Id">Add image</a>
+    </div>
+    if (Model.Likes.Count > 0)
+    {
+        <div style="padding-top:25px">
+            <h2 style="padding-bottom:30px">Likes: </h2>
+            <table class="table">
+                @foreach (var like in Model.Likes)
+                {
+                <tr>
+                    <td>
+                        <a class="row" asp-controller="Users" asp-action="User" asp-route-id="@like.UserId">
+                            <img src="@like.UserImageUrl" alt="Alternate Text" width="50" />
+                            <div style="padding-left:10px">@like.UserName</div>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Messages" asp-action="About" asp-route-id="@like.Id">Message</a>
+                    </td>
+                </tr>
+                }
+            </table>
+        </div>
+    }
+}
+
