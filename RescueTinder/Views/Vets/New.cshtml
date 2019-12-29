@@ -1,0 +1,20 @@
+﻿@using RescueTinder.Data;
+@model AddVetModel;
+@{
+    ViewData["Title"] = "New";
+}
+
+<h2>Welcome! You are here because you have your vet licence and we hope that your ready to help ower community. There are severel steps that we need to take to verify your identity. First you need to enter your vet licence number, then please contact ower administrator at drmnikolov@gmail.com for more details.</h2>
+
+<form enctype="multipart/form-data" method="post">
+    <div class="form-group">
+        <label asp-for="@Model.VetLicence"></label>
+        <input class="form-control" type="text" asp-for="@Model.VetLicence" />
+        <span class="text-danger" asp-validation-for="@Model.VetLicence"></span>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

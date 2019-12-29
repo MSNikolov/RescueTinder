@@ -2,6 +2,7 @@
 @using RescueTinder.Data
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+@inject RoleManager<IdentityRole> RoleManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,9 +25,6 @@
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         @if (SignInManager.IsSignedIn(User))
@@ -46,6 +44,24 @@
                             <li>
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Messages" asp-action="All">Mail</a>
                             </li>
+                            @if (!User.IsInRole("Vet"))
+                            {
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vets" asp-action="New">I am a vet!</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vets" asp-action="Patients">Patients</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vets" asp-action="Manage">Manage Vets</a>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>

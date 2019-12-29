@@ -9,8 +9,6 @@ namespace RescueTinder.Models
     {
         public Guid Id { get; set; }
 
-        public string DogName { get; set; }
-
         public string SenderId { get; set; }
 
         public string SenderImageUrl { get; set; }

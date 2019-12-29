@@ -124,10 +124,19 @@
 
 else
 {
-    <div style="padding-top:25px">
-        <a class="btn btn-primary" asp-controller="Pics" asp-action="Add" asp-route-id="@Model.Id">Add image</a>
+    <div class="row" style="padding-top:25px">
+        <div style="padding-right:25px">
+            <a class="btn btn-primary" asp-controller="Pics" asp-action="Add" asp-route-id="@Model.Id">Add image</a>
+        </div>
+            <a class="btn btn-primary" asp-controller="Dogs" asp-action="Edit" asp-route-id="@Model.Id">Edit info</a>
+        @if (Model.Vet == "No vet")
+        {
+            <div style="padding-left:25px">
+                <a class="btn btn-primary" asp-controller="Vets" asp-action="Choose" asp-route-id="@Model.Id">Choose vet</a>
+            </div>
+        }
     </div>
-    if (Model.Likes.Count > 0)
+    if (Model.Adopted == false && Model.Likes.Count > 0)
     {
         <div style="padding-top:25px">
             <h2 style="padding-bottom:30px">Likes: </h2>
@@ -149,5 +158,11 @@ else
             </table>
         </div>
     }
+}
+
+@if (User.IsInRole("Vet") && Model.VetId == userManager.GetUserId(User))
+{
+    <h3 class="text-warning" style="padding-top:25px">You are @Model.Name's vet!</h3>
+    <a class="btn btn-outline-secondary" asp-controller="Vets" asp-action="Edit" asp-route-id="@Model.Id">Add notes or change health status of @Model.Name</a>
 }
 

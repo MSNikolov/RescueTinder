@@ -202,10 +202,12 @@ namespace RescueTinder.Controllers
                 Province = dog.Province,
                 IsVaccinated = dog.IsVaccinated,
                 IsDisinfected = dog.IsDisinfected,
+                Adopted = dog.Adopted,
                 Owner = dog.Owner.FirstName + " " + dog.Owner.LastName,
                 OwnerNotes = dog.OwnerNotes,
                 OwnerId = dog.Owner.Id,
                 Vet = dog.Vet != null ? dog.Vet.FirstName + " " + dog.Vet.LastName : "No vet",
+                VetId = dog.VetId,
                 Breed = dog.Breed
             };
 
@@ -295,5 +297,108 @@ namespace RescueTinder.Controllers
 
             return View("SearchResults", result);
         }
+
+        [Authorize]
+        [HttpGet("Dogs/Edit/{id?}")]
+        public IActionResult Edit (Guid id)
+        {
+            var dog = new Dog();
+
+            using (this.context)
+            {
+                dog = this.context.Dogs.Single(d => d.Id == id);
+            }
+
+            var result = new EditDogViewModel
+            {
+                Name = dog.Name,
+                BirthDate = dog.BirthDate,
+                Province = dog.Province,
+                IsVaccinated = dog.IsVaccinated,
+                IsDisinfected = dog.IsDisinfected,
+                OwnerNotes = dog.OwnerNotes,
+                Breed = dog.Breed
+            };
+
+            if (dog.OwnerId != this.userManager.GetUserId(User))
+            {
+                result = null;
+            }
+
+            return View(result);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult Edit (EditDogViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+
+            else
+            {
+                using (this.context)
+                {
+                    var dog = this.context.Dogs.Single(d => d.Id == model.Id);
+
+                    dog.Name = model.Name;
+
+                    dog.BirthDate = model.BirthDate;
+
+                    dog.Province = model.Province;
+
+                    dog.IsVaccinated = model.IsVaccinated;
+
+                    dog.IsDisinfected = model.IsDisinfected;
+
+                    dog.OwnerNotes = model.OwnerNotes;
+
+                    dog.Breed = model.Breed;
+
+                    context.SaveChanges();
+                }
+
+
+                return RedirectToAction("Dog", "Dogs", new { Id = model.Id });
+            }
+        }
+
+        [Authorize]
+        public IActionResult Adopt (string id)
+        {
+            var ids = id.Split("tire");
+
+            var userId = ids[0];
+
+            var dogId = Guid.Parse(ids[1]);
+
+            using(this.context)
+            {
+                var dog = this.context.Dogs.Single(d => d.Id == dogId);
+
+                var user = this.context.Users.Single(u => u.Id == userId);
+
+                if (dog.OwnerId != userManager.GetUserId(User))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                else
+                {
+                    dog.Owner = user;
+
+                    dog.Adopted = true;
+
+                    context.SaveChanges();
+
+                    return RedirectToAction("About", "Messages", new { Id = id });
+                }
+            }
+            
+        }
+
     }
 }

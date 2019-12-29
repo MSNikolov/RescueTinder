@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RescueTinder.Data;
 using RescueTinder.Models;
@@ -16,20 +17,35 @@ namespace RescueTinder.Controllers
     {
 
         private ApplicationDbContext context;
+        private UserManager<User> userManager;
 
-        public PicsController(ApplicationDbContext context)
+        public PicsController(ApplicationDbContext context, UserManager<User> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
         }
 
         [Authorize]
         [HttpGet]
         public IActionResult Add(Guid id)
         {
+            var dog = new Dog();
+
+            using (this.context)
+            {
+                dog = this.context.Dogs.Single(d => d.Id == id);
+            }
+                      
+
             var model = new AddPicModel
             {
                 Id = id
             };
+
+            if (dog.OwnerId != this.userManager.GetUserId(User))
+            {
+                model = null;
+            }
 
             return View(model);
         }
@@ -38,43 +54,42 @@ namespace RescueTinder.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(AddPicModel model)
         {
-            if (!model.Pic.FileName.EndsWith(".jpg"))
+            using (this.context)
             {
-                return View(model);
-            }
+                var dog = this.context.Dogs.Single(d => d.Id == model.Id);
 
-            else
-            {
-                var acc = new CloudinaryDotNet.Account("dmm9z8uow", "367813196612582", "I3kSZZCbEN-OHiyD35eh8mzyO8k");
-
-                var cloud = new Cloudinary(acc);
-
-                var file = new FileDescription(model.Pic.FileName, model.Pic.OpenReadStream());
-
-                var upload = new ImageUploadParams()
+                if (!model.Pic.FileName.EndsWith(".jpg") || dog.OwnerId != this.userManager.GetUserId(User))
                 {
-                    File = file
-                };
+                    return View(model);
+                }
 
-                var image = await cloud.UploadAsync(upload);
-
-                var pic = new Pic
+                else
                 {
-                    ImageUrl = image.Uri.AbsoluteUri
-                };
+                    var acc = new CloudinaryDotNet.Account("dmm9z8uow", "367813196612582", "I3kSZZCbEN-OHiyD35eh8mzyO8k");
 
-                var dog = new Dog();
+                    var cloud = new Cloudinary(acc);
 
-                using (context)
-                {
-                    dog = context.Dogs.Single(d => d.Id == model.Id);
+                    var file = new FileDescription(model.Pic.FileName, model.Pic.OpenReadStream());
+
+                    var upload = new ImageUploadParams()
+                    {
+                        File = file
+                    };
+
+                    var image = await cloud.UploadAsync(upload);
+
+                    var pic = new Pic
+                    {
+                        ImageUrl = image.Uri.AbsoluteUri
+                    };
+
 
                     dog.Images.Add(pic);
 
                     await context.SaveChangesAsync();
-                }
 
-                return RedirectToAction("Dog", "Dogs", new { Id = model.Id });
+                    return RedirectToAction("Dog", "Dogs", new { Id = model.Id });
+                }
             }
         }
 

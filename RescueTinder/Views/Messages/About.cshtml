@@ -5,28 +5,43 @@
 @{
     ViewData["Title"] = "About";
 }
+<div class="row">
+    <div class="col-10">
 
+        <div class="chatbox darker">
+            <img src="@Model.DogImageUrl" alt="Dog Avatar" />
+            <h2>This is a discussion about @Model.DogName</h2>
+        </div>
 
-@foreach (var message in Model.OldMessages)
-{
-    if (message.SenderId == userManager.GetUserId(User))
-    {
-    <div class="chatbox darker">
-        <img class="right" src="@message.SenderImageUrl" alt="Avatar">
-        <p>@message.Content</p>
-        <span class="time-left">@message.CreatedOn</span>
+        @foreach (var message in Model.OldMessages)
+        {
+            if (message.SenderId == userManager.GetUserId(User))
+            {
+                <div class="chatbox darker">
+                    <img class="right" src="@message.SenderImageUrl" alt="Avatar">
+                    <p>@message.Content</p>
+                    <span class="time-left">@message.CreatedOn</span>
+                </div>
+            }
+
+            else
+            {
+                <div class="chatbox">
+                    <img src="@message.SenderImageUrl" alt="Avatar" />
+                    <p>@message.Content</p>
+                    <span class="time-right">@message.CreatedOn</span>
+                </div>
+            }
+        }
     </div>
-    }
 
-    else
+    @if (Model.DogOwnerId == userManager.GetUserId(User) && Model.OldMessages.Count > 1 && !Model.Adopted)
     {
-        <div class="chatbox">
-            <img src="@message.SenderImageUrl" alt="Avatar" />
-            <p>@message.Content</p>
-            <span class="time-right">@message.CreatedOn</span>
+        <div class="col-2" style="padding:10px">
+            <a class="btn btn-primary" asp-controller="Dogs" asp-action="Adopt" asp-route-id="@Model.Id">Give for adoption!</a>
         </div>
     }
-}
+</div>
 
 <form method="post" enctype="multipart/form-data">
     <div class="form-group">

@@ -18,5 +18,15 @@ namespace RescueTinder.Models
         public string ReceiverId { get; set; }
 
         public Guid SubjectId { get; set; }
+
+        public string DogName { get; set; }
+
+        public string DogImageUrl { get; set; }
+
+        public string DogOwnerId { get; set; }
+
+        public string Id { get; set; }
+
+        public bool Adopted { get; set; }
     }
 }

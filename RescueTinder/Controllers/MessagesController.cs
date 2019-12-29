@@ -35,6 +35,8 @@ namespace RescueTinder.Controllers
 
             var messages = new List<Message>();
 
+            var dog = new Dog();
+
             using (this.context)
             {
                 messages = this.context.Messages.Where(m =>
@@ -44,13 +46,15 @@ namespace RescueTinder.Controllers
                     .Include(m => m.Receiver)
                     .Include(m => m.Subject)
                     .ToList();
+
+                dog = this.context.Dogs.Include(d => d.Images).Single(d => d.Id == dogId);
             }
 
-            var result = new List<MessageViewModel>();
+            var oldMessages = new List<MessageViewModel>();
 
             foreach (var mess in messages)
             {
-                result.Add(new MessageViewModel
+                oldMessages.Add(new MessageViewModel
                 {
                     Id = mess.Id,
                     SenderId = mess.SenderId,
@@ -59,17 +63,21 @@ namespace RescueTinder.Controllers
                     ReceiverImageUrl = mess.Receiver.ImageUrl,
                     CreatedOn = mess.CreatedOn,
                     SubjectId = mess.SubjectId,
-                    Content = mess.Content,
-                    DogName = mess.Subject.Name
+                    Content = mess.Content
                 });
             }
 
-            var oldMessages = new MessageListViewModel
+            var result = new MessageListViewModel
             {
-                OldMessages = result
+                OldMessages = oldMessages,
+                DogImageUrl = dog.Images.First().ImageUrl,
+                DogName = dog.Name,
+                DogOwnerId = dog.OwnerId,
+                Id = id,
+                Adopted = dog.Adopted
             };
 
-            return View(oldMessages);
+            return View(result);
         }
 
         [Authorize]

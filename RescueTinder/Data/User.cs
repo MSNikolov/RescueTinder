@@ -40,5 +40,7 @@ namespace RescueTinder.Data
         public HashSet<Message> ReceivedMessages { get; set; } = new HashSet<Message>();
 
         public HashSet<VetNote> VetNotes { get; set; } = new HashSet<VetNote>();
+
+        public bool VetAprovedByAdmin { get; set; }
     }
 }

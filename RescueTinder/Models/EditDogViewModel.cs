@@ -7,38 +7,34 @@ using System.Threading.Tasks;
 
 namespace RescueTinder.Models
 {
-    public class DogViewModel
+    public class EditDogViewModel
     {
         public Guid Id { get; set; }
 
+        [Required]
+        [MinLength(3), MaxLength(50)]
+        [Display(Name = "Dog name")]
         public string Name { get; set; }
 
+        [Required]
+        [Display(Name = "Date of birth")]
         public DateTime BirthDate { get; set; }
 
+        [Required]
+        [Display(Name = "Where is the dog currently situated?")]
         public Province Province { get; set; }
 
+        [Display(Name = "Is the dog vaccinated?")]
         public bool IsVaccinated { get; set; }
 
+        [Display(Name = "Is the dog disinfected?")]
         public bool IsDisinfected { get; set; }
 
-        public string Owner { get; set; }
-
+        [Display(Name = "Additional notes")]
         public string OwnerNotes { get; set; }
 
-        public string Vet { get; set; }
-
-        public string VetId { get; set; }
-
-        public Dictionary<DateTime, string> VetNotes { get; set; } = new Dictionary<DateTime, string>();
-
-        public bool Adopted { get; set; }
-
+        [Required]
+        [Display(Name = "Breed")]
         public DogBreed Breed { get; set; }
-
-        public string OwnerId { get; set; }
-
-        public HashSet<LikeViewModel> Likes { get; set; } = new HashSet<LikeViewModel>();
-
-        public Dictionary<Guid, string> Images { get; set; } = new Dictionary<Guid, string>();
     }
 }

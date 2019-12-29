@@ -1,0 +1,55 @@
+﻿@model EditDogViewModel
+@using RescueTinder.Data;
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <h4 style="padding-left: 25%">Edit your dog`s information.</h4>
+    <div class="row">
+        <div class="col-md-6" style="left:25%">
+            <hr />
+            <div class="form-group">
+                <label asp-for=@Model.Name></label>
+                <input asp-for=@Model.Name class="form-control" />
+                <span asp-validation-for=@Model.Name class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for=@Model.BirthDate>Date of birth</label>
+                <input type="date" asp-for=@Model.BirthDate class="form-control" />
+                <span asp-validation-for=@Model.BirthDate class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for=@Model.Province></label>
+                <select asp-for=@Model.Province asp-items="Html.GetEnumSelectList<Province>()" class="form-control"></select>
+                <span asp-validation-for=@Model.Province class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for=@Model.IsVaccinated></label>
+                <input type="checkbox" asp-for=@Model.IsVaccinated value="true" class="form-control" />
+                <span asp-validation-for=@Model.IsVaccinated class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for=@Model.IsDisinfected></label>
+                <input type="checkbox" asp-for=@Model.IsDisinfected value="true" class="form-control" />
+                <span asp-validation-for=@Model.IsDisinfected class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for=@Model.OwnerNotes></label>
+                <textarea asp-for=@Model.OwnerNotes class="form-control"></textarea>
+                <span asp-validation-for=@Model.OwnerNotes class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for=@Model.Breed></label>
+                <select asp-for=@Model.Breed asp-items="Html.GetEnumSelectList<DogBreed>()" class="form-control"></select>
+                <span asp-validation-for=@Model.Breed class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

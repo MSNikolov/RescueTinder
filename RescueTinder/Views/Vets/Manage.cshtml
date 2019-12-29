@@ -1,0 +1,41 @@
+﻿@using RescueTinder.Data;
+@using RescueTinder.Models;
+@model List<VetViewModel>
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<table class="table">
+    <tr>
+        <td>User</td>
+        <td>Email</td>
+        <td>Birthdate</td>
+        <td>Licence</td>
+        <td>Action</td>
+    </tr>
+    @foreach (var vet in Model)
+    {
+        <tr>
+            <td>
+                <a class="row" asp-controller="Users" asp-action="User" asp-route-id="@vet.Id">
+                    <img src="@vet.ImageUrl" alt="Vet Avatar" width="50" />
+                    <div style="padding-left:25px">@vet.Name</div>
+                </a>
+            </td>
+            <td>@vet.Email</td>
+            <td>@vet.BirthDate.ToString("dd.MM.yyyy")</td>
+            <td>@vet.VetLicence</td>
+            <td>
+                @if (!vet.AprovedByAdmin)
+                {
+                    <a class="btn btn-primary" asp-controller="Vets" asp-action="Aprove" asp-route-id="@vet.Id">Accept</a>
+                }
+                else
+                {
+                    <a class="btn btn-danger" asp-controller="Vets" asp-action="Stop" asp-route-id="@vet.Id">Stop</a>
+                }
+            </td>
+        </tr>
+    }
+</table>
+

@@ -1,0 +1,29 @@
+﻿@using RescueTinder.Data;
+@model List<DogChooseVetViewModel>
+@{
+    ViewData["Title"] = "Choose";
+}
+
+<h1>Choose a vet for your dog</h1>
+
+<table class="table">
+    <tr>
+        <td>Vet</td>
+        <td>Action</td>
+    </tr>
+    @foreach (var vet in Model)
+    {
+        <tr>
+            <td>
+                <a class="row" asp-controller="Users" asp-action="User" asp-route-id="@vet.VetId">
+                    <img src="@vet.VetImageUrl" alt="Vet Avatar" width="50" />
+                    <div style="padding-left:25px">@vet.VetName</div>
+                </a>
+            </td>
+            <td>
+                    <a class="btn btn-primary" asp-controller="Vets" asp-action="Select" asp-route-id="@vet.DogVet">Select</a>                
+            </td>
+        </tr>
+    }
+</table>
+
