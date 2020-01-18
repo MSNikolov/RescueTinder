@@ -22,15 +22,10 @@ namespace RescueTinder.Controllers
         [Authorize]
         public IActionResult User(string id)
         {
-            var user = new User();
-
-            using (context)
-            {
-                user = context
+            var user = context
                 .Users
                 .Include(u => u.Dogs)
                 .Single(u => u.Id == id);
-            }
 
             var result = new UserViewModel
             {

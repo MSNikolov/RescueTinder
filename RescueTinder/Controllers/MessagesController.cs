@@ -33,13 +33,7 @@ namespace RescueTinder.Controllers
 
             var dogId = Guid.Parse(ids[1]);
 
-            var messages = new List<Message>();
-
-            var dog = new Dog();
-
-            using (this.context)
-            {
-                messages = this.context.Messages.Where(m =>
+            var messages = this.context.Messages.Where(m =>
                 m.SubjectId == dogId && m.SenderId == userId && m.ReceiverId == userManager.GetUserId(User) ||
                 m.SubjectId == dogId && m.ReceiverId == userId && m.SenderId == userManager.GetUserId(User))
                     .Include(m => m.Sender)
@@ -47,8 +41,7 @@ namespace RescueTinder.Controllers
                     .Include(m => m.Subject)
                     .ToList();
 
-                dog = this.context.Dogs.Include(d => d.Images).Single(d => d.Id == dogId);
-            }
+            var dog = this.context.Dogs.Include(d => d.Images).Single(d => d.Id == dogId);
 
             var oldMessages = new List<MessageViewModel>();
 
@@ -84,7 +77,7 @@ namespace RescueTinder.Controllers
         [HttpPost("/Messages/About/{id?}")]
         public async Task<IActionResult> About(MessageListViewModel model, string id)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || model.Id != id)
             {
                 return View(model);
             }
@@ -97,10 +90,7 @@ namespace RescueTinder.Controllers
 
                 var dogId = Guid.Parse(ids[1]);
 
-                using (context)
-                {
-
-                    var message = new Message
+                var message = new Message
                     {
                         SubjectId = dogId,
                         ReceiverId = userId,
@@ -113,7 +103,6 @@ namespace RescueTinder.Controllers
                     context.Messages.Add(message);
 
                     await context.SaveChangesAsync();
-                }
 
                 return RedirectToAction("About", "Messages", userId + "tire" + dogId);
             }

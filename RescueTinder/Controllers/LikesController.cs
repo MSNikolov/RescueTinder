@@ -23,17 +23,13 @@ namespace RescueTinder.Controllers
 
         public IActionResult All()
         {
-            var likes = new List<Like>();
+            var likes = context.Likes
+                            .Where(l => l.Dog.OwnerId == userManager.GetUserId(User) && l.Dog.Adopted == false)
+                            .Include(l => l.Dog)
+                            .Include(l => l.Dog.Images)
+                            .Include(l => l.User)
+                            .ToList();
 
-            using (context)
-            {
-                 likes = context.Likes
-                    .Where(l => l.Dog.OwnerId == userManager.GetUserId(User) && l.Dog.Adopted == false)
-                    .Include(l => l.Dog)
-                    .Include(l => l.Dog.Images)
-                    .Include(l => l.User)
-                    .ToList();
-            }
 
             var result = new List<LikeViewModel>();
 
@@ -41,7 +37,7 @@ namespace RescueTinder.Controllers
             {
                 var likeModel = new LikeViewModel
                 {
-                    Id = like.UserId+"tire"+like.DogId,
+                    Id = like.UserId + "tire" + like.DogId,
                     DogId = like.Dog.Id,
                     DogName = like.Dog.Name,
                     DogImageUrl = like.Dog.Images.First().ImageUrl,

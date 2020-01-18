@@ -43,23 +43,20 @@ namespace RescueTinder.Controllers
         [HttpPost]
         public IActionResult New(string vetLicence)
         {
-            if (User.IsInRole("Vet"))
+            if (User.IsInRole("Vet") || !ModelState.IsValid)
             {
                 return RedirectToAction("Index", "Home");
             }
 
             else
             {
-                using (this.context)
-                {
-                    var user = this.context.Users.Single(u => u.Id == this.userManager.GetUserId(User));
+                var user = this.context.Users.Single(u => u.Id == this.userManager.GetUserId(User));
 
-                    user.VetLicence = vetLicence;
+                user.VetLicence = vetLicence;
 
-                    user.VetAprovedByAdmin = false;
+                user.VetAprovedByAdmin = false;
 
-                    context.SaveChanges();
-                }
+                context.SaveChanges();
 
                 return RedirectToAction("Index", "Home");
             }
@@ -69,12 +66,7 @@ namespace RescueTinder.Controllers
         [HttpGet]
         public IActionResult Manage()
         {
-            var vets = new List<User>();
-
-            using (this.context)
-            {
-                vets = this.context.Users.Where(u => u.VetLicence != null).ToList();
-            }
+            var vets = this.context.Users.Where(u => u.VetLicence != null).ToList();
 
             var result = new List<VetViewModel>();
 
@@ -93,22 +85,18 @@ namespace RescueTinder.Controllers
             }
 
             return View(result);
-
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Aprove(string id)
         {
-            using (this.context)
-            {
-                var user = this.context.Users.Single(u => u.Id == id);
+            var user = this.context.Users.Single(u => u.Id == id);
 
-                user.VetAprovedByAdmin = true;
+            user.VetAprovedByAdmin = true;
 
-                await userManager.AddToRoleAsync(user, "Vet");
+            await userManager.AddToRoleAsync(user, "Vet");
 
-                await context.SaveChangesAsync();
-            }
+            await context.SaveChangesAsync();
 
             return RedirectToAction("Manage", "Vets");
         }
@@ -116,16 +104,13 @@ namespace RescueTinder.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Stop(string id)
         {
-            using (this.context)
-            {
-                var user = this.context.Users.Single(u => u.Id == id);
+            var user = this.context.Users.Single(u => u.Id == id);
 
-                user.VetAprovedByAdmin = false;
+            user.VetAprovedByAdmin = false;
 
-                await userManager.RemoveFromRoleAsync(user, "Vet");
+            await userManager.RemoveFromRoleAsync(user, "Vet");
 
-                await context.SaveChangesAsync();
-            }
+            await context.SaveChangesAsync();
 
             return RedirectToAction("Manage", "Vets");
         }
@@ -133,35 +118,29 @@ namespace RescueTinder.Controllers
         [Authorize]
         public IActionResult Choose(Guid id)
         {
-            using (this.context)
+            var dog = this.context.Dogs.Single(d => d.Id == id);
+
+            if (dog.OwnerId != this.userManager.GetUserId(User) || dog.Vet != null)
             {
-                var dog = this.context.Dogs.Single(d => d.Id == id);
-
-                using (this.userManager)
-                {
-                    if (dog.OwnerId != this.userManager.GetUserId(User) || dog.Vet != null)
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
-
-                var vets = this.context.Users.Where(u => u.VetAprovedByAdmin).ToList();
-
-                var result = new List<DogChooseVetViewModel>();
-
-                foreach (var vet in vets)
-                {
-                    result.Add(new DogChooseVetViewModel
-                    {
-                        DogId = dog.Id,
-                        VetId = vet.Id,
-                        VetImageUrl = vet.ImageUrl,
-                        VetName = vet.FirstName + " " + vet.LastName
-                    });
-                }
-
-                return View(result);
+                return RedirectToAction("Index", "Home");
             }
+
+            var vets = this.context.Users.Where(u => u.VetAprovedByAdmin).ToList();
+
+            var result = new List<DogChooseVetViewModel>();
+
+            foreach (var vet in vets)
+            {
+                result.Add(new DogChooseVetViewModel
+                {
+                    DogId = dog.Id,
+                    VetId = vet.Id,
+                    VetImageUrl = vet.ImageUrl,
+                    VetName = vet.FirstName + " " + vet.LastName
+                });
+            }
+
+            return View(result);
         }
 
         [Authorize]
@@ -173,24 +152,18 @@ namespace RescueTinder.Controllers
 
             var vetId = ids[1];
 
-            using (this.context)
+            var dog = this.context.Dogs.SingleOrDefault(d => d.Id == dogId);
+
+            var vet = this.context.Users.SingleOrDefault(u => u.Id == vetId);
+
+            if (userManager.GetUserId(User) != dog.OwnerId || dog.Vet != null || dog == null || vet == null || vet.VetAprovedByAdmin == false)
             {
-                var dog = this.context.Dogs.Single(d => d.Id == dogId);
-
-                using (userManager)
-                {
-                    if (userManager.GetUserId(User) != dog.OwnerId || dog.Vet != null)
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
-
-                var vet = this.context.Users.Single(u => u.Id == vetId);
-
-                dog.Vet = vet;
-
-                context.SaveChanges();
+                return RedirectToAction("Index", "Home");
             }
+
+            dog.Vet = vet;
+
+            context.SaveChanges();
 
             return RedirectToAction("Dog", "Dogs", new { Id = dogId });
         }
@@ -198,21 +171,13 @@ namespace RescueTinder.Controllers
         [Authorize(Roles = "Vet")]
         public IActionResult Patients()
         {
-            var patients = new List<Dog>();
-
-            using (this.context)
-            {
-                using (this.userManager)
-                {
-                    patients = this.context
+            var patients = this.context
                         .Dogs
                         .Where(d => d.VetId == userManager.GetUserId(User))
                         .Include(d => d.Owner)
                         .Include(d => d.Vet)
                         .Include(d => d.Images)
                         .ToList();
-                }
-            }
 
             var result = new List<DogViewModel>();
 
@@ -240,36 +205,28 @@ namespace RescueTinder.Controllers
                 result.Add(dogModel);
             }
 
-            return View (result);
+            return View(result);
         }
 
         [Authorize(Roles = "Vet")]
-        public IActionResult Edit (Guid id)
+        public IActionResult Edit(Guid id)
         {
-            var dog = new Dog();
+            var dog = this.context.Dogs.Single(d => d.Id == id);
 
-            using (this.context)
+            if (dog.VetId == userManager.GetUserId(User))
             {
-                dog = this.context.Dogs.Single(d => d.Id == id);
+                var model = new VetNoteViewModel
+                {
+                    IsVaccinated = dog.IsVaccinated,
+                    IsDisinfected = dog.IsDisinfected
+                };
+
+                return View(model);
             }
 
-            using (this.userManager)
+            else
             {
-                if (dog.VetId == userManager.GetUserId(User))
-                {
-                    var model = new VetNoteViewModel
-                    {
-                        IsVaccinated = dog.IsVaccinated,
-                        IsDisinfected = dog.IsDisinfected
-                    };
-
-                    return View(model);
-                }
-
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                return RedirectToAction("Index", "Home");
             }
         }
 
@@ -277,41 +234,35 @@ namespace RescueTinder.Controllers
         [HttpPost]
         public IActionResult Edit(VetNoteViewModel model)
         {
-            using (this.context)
+            var dog = this.context.Dogs.Single(d => d.Id == model.Id);
+
+            var vet = new User();
+
+            if (dog.VetId != this.userManager.GetUserId(User))
             {
-                var dog = this.context.Dogs.Single(d => d.Id == model.Id);
-
-                var vet = new User();
-
-                using (this.userManager)
-                {
-                    if (dog.VetId != this.userManager.GetUserId(User))
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-
-                    vet = this.context.Users.Single(u => u.Id == this.userManager.GetUserId(User));
-                }
-
-                dog.IsVaccinated = model.IsVaccinated;
-
-                dog.IsDisinfected = model.IsDisinfected;
-
-                if (model.VetNote != null)
-                {
-                    dog.VetNotes.Add(new VetNote
-                    {
-                        Subject = dog,
-                        Vet = vet,
-                        CreatedOn = DateTime.UtcNow,
-                        Content = model.VetNote
-                    });
-                }
-
-                context.SaveChanges();
-
-                return RedirectToAction("Dog", "Dogs", new { Id = model.Id });
+                return RedirectToAction("Index", "Home");
             }
+
+            vet = this.context.Users.Single(u => u.Id == this.userManager.GetUserId(User));
+
+            dog.IsVaccinated = model.IsVaccinated;
+
+            dog.IsDisinfected = model.IsDisinfected;
+
+            if (model.VetNote != null)
+            {
+                dog.VetNotes.Add(new VetNote
+                {
+                    Subject = dog,
+                    Vet = vet,
+                    CreatedOn = DateTime.UtcNow,
+                    Content = model.VetNote
+                });
+            }
+
+            context.SaveChanges();
+
+            return RedirectToAction("Dog", "Dogs", new { Id = model.Id });
         }
     }
 }
