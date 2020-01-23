@@ -16,6 +16,7 @@
                 <img src="@dog.Images.First().Value" alt="Dog pic" width="400" />
             </div>
             <div class="col-5" style="padding-top:30px">
+                <h3 class="text-dark">Gender: @dog.Gender</h3>
                 <h3 class="text-dark">Age: @Math.Round(((DateTime.Today.Subtract(dog.BirthDate).TotalDays) / 365), 1) years</h3>
                 <h3 class="text-dark">Owner: @dog.Owner</h3>
                 <h4 class="text-dark">Owner says: @dog.OwnerNotes</h4>
@@ -34,6 +35,14 @@
                 else
                 {
                     <h3 class="text-danger">Not disinfected!</h3>
+                }
+                @if (dog.IsCastrated)
+                {
+                    <h3 class="text-dark">Dog is castrated</h3>
+                }
+                else
+                {
+                    <h3 class="text-danger">Not castrated!</h3>
                 }
                 <h3 class="text-dark">Pics: @dog.Images.Count</h3>
             </div>

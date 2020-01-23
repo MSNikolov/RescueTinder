@@ -20,6 +20,11 @@
                 <span asp-validation-for=@Model.IsDisinfected class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for=@Model.IsCastrated></label>
+                <input type="checkbox" asp-for=@Model.IsCastrated value="true" class="form-control" />
+                <span asp-validation-for=@Model.IsCastrated class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for=@Model.VetNote></label>
                 <textarea asp-for=@Model.VetNote class="form-control"></textarea>
             </div>

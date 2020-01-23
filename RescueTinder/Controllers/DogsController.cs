@@ -56,6 +56,8 @@ namespace RescueTinder.Controllers
                     IsDisinfected = model.IsDisinfected,
                     IsVaccinated = model.IsVaccinated,
                     OwnerNotes = model.OwnerNotes,
+                    IsCastrated = model.IsCastrated,
+                    Gender = model.Gender,
                     Owner = user
                 };
 
@@ -122,6 +124,7 @@ namespace RescueTinder.Controllers
                 DateTime.Now.Subtract(d.BirthDate).Days <= model.MaxAge * 365 &&
                 d.Province == model.Province &&
                 d.Breed == model.Breed &&
+                d.Gender == model.Gender &&
                 d.Adopted == false)
                 .ToList();
 
@@ -136,6 +139,14 @@ namespace RescueTinder.Controllers
             if (model.IsDisinfected == true)
             {
                 foreach (var dog in dogs.Where(d => d.IsDisinfected == false).ToList())
+                {
+                    dogs.Remove(dog);
+                }
+            }
+
+            if (model.IsCastrated == true)
+            {
+                foreach (var dog in dogs.Where(d => d.IsCastrated == false).ToList())
                 {
                     dogs.Remove(dog);
                 }
@@ -157,10 +168,12 @@ namespace RescueTinder.Controllers
                 {
                     Id = dog.Id,
                     Name = dog.Name,
+                    Gender = dog.Gender,
                     BirthDate = dog.BirthDate,
                     Province = dog.Province,
                     IsVaccinated = dog.IsVaccinated,
                     IsDisinfected = dog.IsDisinfected,
+                    IsCastrated = dog.IsCastrated,
                     Owner = dog.Owner.FirstName + " " + dog.Owner.LastName,
                     OwnerNotes = dog.OwnerNotes,
                     Vet = dog.Vet != null ? dog.Vet.FirstName + " " + dog.Vet.LastName : "No vet",
@@ -210,10 +223,12 @@ namespace RescueTinder.Controllers
             {
                 Id = dog.Id,
                 Name = dog.Name,
+                Gender = dog.Gender,
                 BirthDate = dog.BirthDate,
                 Province = dog.Province,
                 IsVaccinated = dog.IsVaccinated,
                 IsDisinfected = dog.IsDisinfected,
+                IsCastrated = dog.IsCastrated,
                 Adopted = dog.Adopted,
                 Owner = dog.Owner.FirstName + " " + dog.Owner.LastName,
                 OwnerNotes = dog.OwnerNotes,
@@ -304,10 +319,12 @@ namespace RescueTinder.Controllers
                 {
                     Id = dog.Id,
                     Name = dog.Name,
+                    Gender = dog.Gender,
                     BirthDate = dog.BirthDate,
                     Province = dog.Province,
                     IsVaccinated = dog.IsVaccinated,
                     IsDisinfected = dog.IsDisinfected,
+                    IsCastrated = dog.IsCastrated,
                     Owner = dog.Owner.FirstName + " " + dog.Owner.LastName,
                     OwnerNotes = dog.OwnerNotes,
                     Vet = dog.Vet != null ? dog.Vet.FirstName + " " + dog.Vet.LastName : "No vet",
@@ -343,10 +360,12 @@ namespace RescueTinder.Controllers
             var result = new EditDogViewModel
             {
                 Name = dog.Name,
+                Gender = dog.Gender,
                 BirthDate = dog.BirthDate,
                 Province = dog.Province,
                 IsVaccinated = dog.IsVaccinated,
                 IsDisinfected = dog.IsDisinfected,
+                IsCastrated = dog.IsCastrated,
                 OwnerNotes = dog.OwnerNotes,
                 Breed = dog.Breed
             };
@@ -374,6 +393,8 @@ namespace RescueTinder.Controllers
 
                 dog.Name = model.Name;
 
+                dog.Gender = model.Gender;
+
                 dog.BirthDate = model.BirthDate;
 
                 dog.Province = model.Province;
@@ -381,6 +402,8 @@ namespace RescueTinder.Controllers
                 dog.IsVaccinated = model.IsVaccinated;
 
                 dog.IsDisinfected = model.IsDisinfected;
+
+                dog.IsCastrated = model.IsCastrated;
 
                 dog.OwnerNotes = model.OwnerNotes;
 

@@ -16,6 +16,9 @@ namespace RescueTinder.Models
         [Display(Name = "Dog name")]
         public string Name { get; set; }
 
+        [Display(Name = "Dog's gender")]
+        public Gender Gender { get; set; }
+
         [Required]
         [Display(Name = "Date of birth")]
         public DateTime BirthDate { get; set; }
@@ -29,6 +32,9 @@ namespace RescueTinder.Models
 
         [Display(Name = "Is the dog disinfected?")]
         public bool IsDisinfected { get; set; }
+
+        [Display(Name = "Is the dog castrated?")]
+        public bool IsCastrated { get; set; }
 
         [Display(Name = "Additional notes")]
         public string OwnerNotes { get; set; }

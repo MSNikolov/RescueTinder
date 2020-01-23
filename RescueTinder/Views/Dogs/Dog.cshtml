@@ -38,7 +38,8 @@
 <div style="padding-top:50px">
     <ul>
         <li>The owner of @Model.Name is @Model.Owner</li>
-        <li>@Model.Name is born on @Model.BirthDate.ToString("dd-MMM-yyyy")
+        <li>@Model.Name is @Model.Gender.ToString().ToLower()</li>
+        <li>@Model.Name is born on @Model.BirthDate.ToString("dd.MM.yyyy")
         <li>@Model.Name is a @Model.Breed.ToString()</li>
         <li>@Model.Name is situated in @Model.Province.ToString()</li>
 
@@ -70,30 +71,42 @@
             </li>
         }
 
+        @if (@Model.IsCastrated)
+        {
+            <li>
+                @Model.Name is castrated
+            </li>
+        }
+
+        else
+        {
+            <li>
+                @Model.Name is not castrated
+            </li>
+        }
+
         <li>
             @Model.Owner says about @Model.Name:
-            <div>
-                <blockquote>@Model.OwnerNotes</blockquote>
+            <div class="chatbox darker" style="width:500px">
+                @Model.OwnerNotes
             </div>
         </li>
-
-        <li>
-            The vet of @Model.Name is Dr. @Model.Vet
-        </li>
-
         @if (Model.Vet != "No vet")
         {
+            <li>
+                The vet of @Model.Name is Dr. @Model.Vet
+            </li>
             <li>
                 Dr. @Model.Vet added the following notes:
 
                 @foreach (var note in Model.VetNotes)
                 {
                     <div style="padding-top:15px; padding-bottom:15px">
-                        <h2>
-                            @note.Key.ToString("dd-MMM-yyyy"):
-                        </h2>
-                        <div>
-                            <text style="background-color: darkcyan; border: 1px solid black" class="text-light">@note.Value</text>
+                        <h3>
+                            @note.Key.ToString("dd.MM.yyyy"):
+                        </h3>
+                        <div class="chatbox" style="width:500px">
+                            @note.Value
                         </div>
                     </div>
                 }
@@ -128,7 +141,7 @@ else
         <div style="padding-right:25px">
             <a class="btn btn-primary" asp-controller="Pics" asp-action="Add" asp-route-id="@Model.Id">Add image</a>
         </div>
-            <a class="btn btn-primary" asp-controller="Dogs" asp-action="Edit" asp-route-id="@Model.Id">Edit info</a>
+        <a class="btn btn-primary" asp-controller="Dogs" asp-action="Edit" asp-route-id="@Model.Id">Edit info</a>
         @if (Model.Vet == "No vet")
         {
             <div style="padding-left:25px">
@@ -143,17 +156,17 @@ else
             <table class="table">
                 @foreach (var like in Model.Likes)
                 {
-                <tr>
-                    <td>
-                        <a class="row" asp-controller="Users" asp-action="User" asp-route-id="@like.UserId">
-                            <img src="@like.UserImageUrl" alt="Alternate Text" width="50" />
-                            <div style="padding-left:10px">@like.UserName</div>
-                        </a>
-                    </td>
-                    <td>
-                        <a class="btn btn-primary" asp-controller="Messages" asp-action="About" asp-route-id="@like.Id">Message</a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            <a class="row" asp-controller="Users" asp-action="User" asp-route-id="@like.UserId">
+                                <img src="@like.UserImageUrl" alt="Alternate Text" width="50" />
+                                <div style="padding-left:10px">@like.UserName</div>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" asp-controller="Messages" asp-action="About" asp-route-id="@like.Id">Message</a>
+                        </td>
+                    </tr>
                 }
             </table>
         </div>

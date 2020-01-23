@@ -15,6 +15,11 @@
                 <span asp-validation-for=@Model.Name class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for=@Model.Gender></label>
+                <select asp-for=@Model.Gender asp-items="Html.GetEnumSelectList<Gender>()" class="form-control"></select>
+                <span asp-validation-for=@Model.Gender class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for=@Model.BirthDate>Date of birth</label>
                 <input type="date" asp-for=@Model.BirthDate class="form-control" />
                 <span asp-validation-for=@Model.BirthDate class="text-danger"></span>
@@ -33,6 +38,11 @@
                 <label asp-for=@Model.IsDisinfected></label>
                 <input type="checkbox" asp-for=@Model.IsDisinfected value="true" class="form-control" />
                 <span asp-validation-for=@Model.IsDisinfected class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for=@Model.IsCastrated></label>
+                <input type="checkbox" asp-for=@Model.IsCastrated value="true" class="form-control" />
+                <span asp-validation-for=@Model.IsCastrated class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for=@Model.OwnerNotes></label>

@@ -187,10 +187,12 @@ namespace RescueTinder.Controllers
                 {
                     Id = dog.Id,
                     Name = dog.Name,
+                    Gender = dog.Gender,
                     BirthDate = dog.BirthDate,
                     Province = dog.Province,
                     IsVaccinated = dog.IsVaccinated,
                     IsDisinfected = dog.IsDisinfected,
+                    IsCastrated = dog.IsCastrated,
                     Owner = dog.Owner.FirstName + " " + dog.Owner.LastName,
                     OwnerNotes = dog.OwnerNotes,
                     Vet = dog.Vet != null ? dog.Vet.FirstName + " " + dog.Vet.LastName : "No vet",
@@ -218,7 +220,8 @@ namespace RescueTinder.Controllers
                 var model = new VetNoteViewModel
                 {
                     IsVaccinated = dog.IsVaccinated,
-                    IsDisinfected = dog.IsDisinfected
+                    IsDisinfected = dog.IsDisinfected,
+                    IsCastrated = dog.IsCastrated
                 };
 
                 return View(model);
@@ -248,6 +251,8 @@ namespace RescueTinder.Controllers
             dog.IsVaccinated = model.IsVaccinated;
 
             dog.IsDisinfected = model.IsDisinfected;
+
+            dog.IsCastrated = model.IsCastrated;
 
             if (model.VetNote != null)
             {

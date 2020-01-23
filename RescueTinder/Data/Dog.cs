@@ -49,5 +49,9 @@ namespace RescueTinder.Data
         public HashSet<Message> Messages { get; set; } = new HashSet<Message>();
 
         public HashSet<Pic> Images { get; set; } = new HashSet<Pic>();
+
+        public Gender Gender { get; set; }
+
+        public bool IsCastrated { get; set; }
     }
 }

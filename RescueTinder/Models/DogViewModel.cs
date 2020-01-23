@@ -13,6 +13,8 @@ namespace RescueTinder.Models
 
         public string Name { get; set; }
 
+        public Gender Gender { get; set; }
+
         public DateTime BirthDate { get; set; }
 
         public Province Province { get; set; }
@@ -20,6 +22,8 @@ namespace RescueTinder.Models
         public bool IsVaccinated { get; set; }
 
         public bool IsDisinfected { get; set; }
+
+        public bool IsCastrated { get; set; }
 
         public string Owner { get; set; }
 

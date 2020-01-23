@@ -17,6 +17,9 @@ namespace RescueTinder.Models
         [Display(Name = "Select maximum age")]
         public int MaxAge { get; set; }
 
+        [Display(Name = "Select dog's gender")]
+        public Gender Gender { get; set; }
+
         [Display(Name = "Select province")]
         public Province Province { get; set; }
 
@@ -28,6 +31,9 @@ namespace RescueTinder.Models
 
         [Display(Name = "Only disinfected dogs")]
         public bool IsDisinfected { get; set; }
+
+        [Display(Name = "Only castrated dogs")]
+        public bool IsCastrated { get; set; }
 
         [Display(Name = "Only dogs with notes from the vet")]
         public bool HasVetNotes { get; set; }
